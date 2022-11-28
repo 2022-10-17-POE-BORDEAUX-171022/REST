@@ -49,6 +49,7 @@ public class JsonController extends HttpServlet {
 				User u = new User(id, name, email, password, age);
 				users.add(u);
 				response.setStatus(200);
+				response.getWriter().write("User created");
 			}
 			
 
@@ -61,30 +62,63 @@ public class JsonController extends HttpServlet {
 	
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		try {
+			
+			int id =  Integer.parseInt( request.getParameter("id"));
+			int age =  Integer.parseInt( request.getParameter("age"));
+			
+			String name = request.getParameter("name");
+			String email = request.getParameter("email");
+			String password = request.getParameter("password");
+			
+			if (name == null || email == null || password == null) {
+				throw new Exception();				
+			} else {
+				
+				User old = getUserById(id);
+				if (old != null) {
+					users.remove(old);
+					User newUser = new User(id, name, email, password, age);
+					users.add(newUser);
+					response.setStatus(200);
+				} else {
+					response.setStatus(404);
+				}
+			}	
+		} catch (Exception e) {
+			response.setStatus(400);
+		}
 	}
 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-try {
+		try {
 			
 			int id =  Integer.parseInt( request.getParameter("id"));
-
-			boolean found = false;
 			
-			for (User u : users) {
-				if (u.getId() == id) {
-					users.remove(u);
-					found = true;
-				}
+			User u = getUserById(id);
+			
+			if (u != null) {
+				users.remove(u);
+				response.setStatus(200);
+			} else {
+				response.setStatus(404);
 			}
-			
-			response.setStatus(found ? 200 : 404);
-			
-
 		} catch (Exception e) {
 			response.setStatus(400);
 
 		}
 	}
+	
+	
+	private User getUserById(int id) {
+		for (User u : users) { 
+			if (u.getId() == id) {
+				return u;
+			}
+		}
+		return null;
+	}
+	
+	
 }

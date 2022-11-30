@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.m2i.restapispring.modele.Author;
+import com.m2i.restapispring.entity.Author;
+
 
 @RestController
 @RequestMapping("/hello")
@@ -49,7 +50,7 @@ public class HelloController {
 	
 	@GetMapping(value="/author")
 	public Author getAuthor() {
-		return new Author("toto",35, "Lalala", 15);
+		return new Author(0, null, null, null, 0);
 	}
 	
 	@PostMapping(value="/author")
